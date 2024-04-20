@@ -6,23 +6,27 @@ using UnityEngine.Advertisements;
 #endif
 
 public static class Ads {
-
     public static void Init() {
-#if UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS
-        if (!Advertisement.isInitialized) {
-            Advertisement.Initialize((Application.platform == RuntimePlatform.Android) ? "1187216" : "1187217", Application.isEditor);
-        }
-#endif
+        /*IronSourceInterstitialEvents.onAdReadyEvent += DoShowAd;
+        IronSourceInterstitialEvents.onAdLoadFailedEvent += (error) => LogError(error);
+        IronSourceInterstitialEvents.onAdShowFailedEvent += (error, info) => LogError(error);*/
     }
+
 
     public static void ShowAd() {
-#if UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS
-        if (Advertisement.IsReady()) {
-            Advertisement.Show();
+        /*if (IronSource.Agent.isInterstitialReady()) {
+            DoShowAd(null);
         }
         else {
-            Debug.LogWarning("Ads not ready");
-        }
-#endif
+            IronSource.Agent.loadInterstitial();
+        }*/
     }
+
+    /*private static void DoShowAd(IronSourceAdInfo info) {
+        IronSource.Agent.showInterstitial();
+    }
+
+    private static void LogError(object error) {
+        Debug.LogError(error);
+    }*/
 }

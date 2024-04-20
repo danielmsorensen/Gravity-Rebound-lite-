@@ -18,7 +18,7 @@ public class Game : SceneSwitcher {
     [Header("Ads")]
     public int gamesPerAd=3;
 
-	public int score { get; protected set; }
+    public int score { get; protected set; }
     public int level { get; protected set; }
     public bool gameover { get; protected set; }
 
@@ -48,19 +48,18 @@ public class Game : SceneSwitcher {
         score += (int)ammount;
         UI.SetText("Score", "Score: " + score.ToString("D3"));
     }
-    
+
     public void GameOver() {
         gameover = true;
 
         UI.SetText("ScoreGO", "Score: " + score.ToString("D3"));
-        
+
         int highscore = PlayerPrefs.GetInt("Highscore", 0);
         if (score > highscore) {
             UI.SetText("Highscore", "New Highscore");
             PlayerPrefs.SetInt("Highscore", score);
             highscore = score;
-        }
-        else {
+        } else {
             UI.SetText("Highscore", "Highscore: " + highscore.ToString("D3"));
         }
 
@@ -71,7 +70,6 @@ public class Game : SceneSwitcher {
             adNo = 0;
             Ads.ShowAd();
         }
-
         StartCoroutine(SlowTime(slowTime));
     }
 
@@ -101,7 +99,7 @@ public class Game : SceneSwitcher {
 
         while (Time.time <= end) {
             if (Time.time <= start + inTime) levelBar.alpha = Mathf.Lerp(0, 1, Mathf.InverseLerp(start, start + inTime, Time.time));
-            else if(Time.time <= end && Time.time >= end - outTime) levelBar.alpha = Mathf.Lerp(1, 0, Mathf.InverseLerp(start, end, Time.time));
+            else if (Time.time <= end && Time.time >= end - outTime) levelBar.alpha = Mathf.Lerp(1, 0, Mathf.InverseLerp(start, end, Time.time));
             yield return null;
         }
 

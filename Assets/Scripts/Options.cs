@@ -21,25 +21,10 @@ public class Options : MonoBehaviour {
     public Color selectedColour;
     public List<Image> skinnedImages = new List<Image>();
 
-    public InputField passwordField;
-
     [Header("Username Select Screen")]
     public InputField usernameField;
     public Button doneButton;
     public Text mainErrorText;
-    [Space]
-    public GameObject loginPanel;
-    public InputField usernameLoginField;
-    public InputField passwordLoginField;
-    public Text loginErrorText;
-    [Space]
-    public Button logoutButton;
-    public Button deleteAccoundButton;
-
-    [Header("Other Screens")]
-    public Button multiplayerButton;
-    public GameObject passwordPanel;
-    public InputField passwordPanelField;
 
     enum Option { Skin, Background }
 
@@ -61,7 +46,7 @@ public class Options : MonoBehaviour {
 
         UpdateSkins();
         UpdateBackgrounds();
-        
+
         SetUsername(PlayerPrefs.GetString("Username", ""));
     }
 
@@ -73,19 +58,10 @@ public class Options : MonoBehaviour {
         yield return null;
 
         if (string.IsNullOrEmpty(username)) {
-            if (Application.internetReachability == NetworkReachability.NotReachable) {
-                multiplayerButton.interactable = logoutButton.interactable = deleteAccoundButton.interactable = false;
-                ShowError("No internet connection");
-            }
-            else {
-                doneButton.interactable = false;
-                UI.SetPage("Username", true);
-            }
-        }
-        else {
+            doneButton.interactable = false;
+            UI.SetPage("Username", true);
+        } else {
             usernameField.readOnly = true;
-            passwordField.gameObject.SetActive(true);
-            passwordField.text = Highscores.GetUsernameHash(username).ToString();
         }
     }
 
@@ -116,7 +92,7 @@ public class Options : MonoBehaviour {
 
         list = Resources.LoadAll<Sprite>(option.ToString() + "s");
         selector.ClearChildren();
-        
+
         foreach (Sprite sprite in list) {
             Image image = new GameObject(sprite.name).AddComponent<Image>();
             image.sprite = sprite;
@@ -140,14 +116,14 @@ public class Options : MonoBehaviour {
             audio.element = UIAudio.Element.Button;
 
             buttons.Add(sprite.name, button);
-            
+
             if (sprite.name == PlayerPrefs.GetString(option.ToString(), def)) {
                 image.color = selectedColour;
 
-                switch(option) {
+                switch (option) {
                     case (Option.Skin):
                         skin = sprite;
-                        foreach(Image i in skinnedImages) {
+                        foreach (Image i in skinnedImages) {
                             i.sprite = sprite;
                         }
                         break;
@@ -205,55 +181,14 @@ public class Options : MonoBehaviour {
 
     #region Username Functions
     public void InputUsername(string newUsername) {
-        doneButton.interactable = false;
-
         if (!string.IsNullOrEmpty(newUsername)) {
-            Debug.Log("Checking username");
-            highscores.ContainsUsername(newUsername, (bool containsNew) => {
-                if (!containsNew) {
-                    Debug.Log("Setting username to " + newUsername);
+            Debug.Log("Setting username to " + newUsername);
 
-                    SetUsername(newUsername);
-                    ClearError();
-
-                    passwordPanel.SetActive(true);
-                }
-                else {
-                    Debug.Log("Username taken");
-                    ShowError("Username Taken");
-                    usernameLoginField.text = newUsername;
-                }
-            });
-        }
-        else {
+            SetUsername(newUsername);
+            ClearError();
+        } else {
             SetUsername("");
             ShowError("");
-            usernameLoginField.text = "";
-        }
-    }
-
-    public void Login() {
-        if (Highscores.GetUsernameHash(usernameLoginField.text) == float.Parse(passwordLoginField.text)) {
-            highscores.ContainsUsername(usernameLoginField.text, (bool contains) => {
-                if (contains) {
-                    SetUsername(usernameLoginField.text);
-                    Debug.Log("Loged in as " + username + " with the password " + passwordField.text);
-
-                    ClearError();
-                    mainErrorText.color = loginErrorText.color = Color.green;
-                    mainErrorText.text = loginErrorText.text = "Logged in successfully";
-
-                    loginPanel.SetActive(false);
-                }
-                else {
-                    Debug.Log("Username not recognised");
-                    loginErrorText.text = "Username or password incorrect";
-                }
-            });
-        }
-        else {
-            Debug.Log("Password incorrect");
-            loginErrorText.text = "Username or password incorrect";
         }
     }
 
@@ -261,20 +196,10 @@ public class Options : MonoBehaviour {
         ResetUsername();
         sceneSwitcher.MainMenu();
     }
-    public void DeleteAccount() {
-        highscores.ContainsUsername(username, (bool contatins) => {
-            if(contatins) highscores.RemoveHighscore(username);
-            ResetUsername();
-            ResetSkins();
-            ResetBackground();
-            sceneSwitcher.MainMenu();
-        });
-    }
 
     void SetUsername(string username) {
         PlayerPrefs.SetString("Username", username);
         Options.username = usernameField.text = username;
-        passwordField.text = passwordPanelField.text = Highscores.GetUsernameHash(username).ToString();
     }
     void ShowError(string error) {
         doneButton.interactable = false;
