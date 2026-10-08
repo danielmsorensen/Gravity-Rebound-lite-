@@ -65,7 +65,8 @@ release = json.load(open(sys.argv[1]))["results"][0]["downloads"][0]
 print("editor\t" + release["url"])
 def walk(modules):
     for m in modules:
-        if m["id"] == "android" or m["id"].startswith(("android-open-jdk", "android-sdk", "android-ndk")):
+        # android-sdk-ndk-tools is only a parent entry pointing at the legacy sdk-tools zip, which Unity doesn't use.
+        if m["id"] == "android" or (m["id"].startswith(("android-open-jdk", "android-sdk", "android-ndk")) and m["id"] != "android-sdk-ndk-tools"):
             print(m["id"] + "\t" + m["url"])
         walk(m.get("subModules", []))
 walk(release["modules"])
