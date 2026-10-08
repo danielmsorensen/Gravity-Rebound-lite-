@@ -1,0 +1,6 @@
+# Room looks up each database's generated *_Impl class by name via reflection, so R8 must keep them.
+# Without this, WorkManager (pulled in by the Unity Android player) crashes the app on launch with
+# "Failed to create an instance of class androidx.work.impl.WorkDatabase".
+-keep class * extends androidx.room.RoomDatabase { <init>(); }
+-keep class androidx.work.impl.WorkDatabase_Impl { *; }
+-keepnames class androidx.work.impl.WorkDatabase
